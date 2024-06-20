@@ -6,7 +6,7 @@ import App from "./App.jsx";
 // const socket = io("http://localhost:3000");
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <App />
+  // </React.StrictMode>
 );

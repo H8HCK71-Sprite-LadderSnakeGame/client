@@ -22,7 +22,7 @@ function App() {
   const activeTheme = themes[theme];
 
   //Ka lili
-  const [username, setUsername] = useState("x");
+  const [username, setUsername] = useState("player1");
   const [room, setRoom] = useState("1");
   const [showChat, setShowChat] = useState(false);
 
@@ -78,8 +78,8 @@ function App() {
   };
 
   const currentPlayer = players[turn]?.name;
-  const isCurrentPlayerTurn =
-    player && players[turn] && player.id === players[turn].id;
+  const isCurrentPlayerTurn = player && players[turn] && player.id === players[turn].id;
+  console.log(player);
 
   return (
     <>
@@ -115,9 +115,7 @@ function App() {
                     //   }}
                     // >
                     <div className="cell bg-blue-700 border flex items-center justify-center h-12 w-12 relative">
-                      <span style={{ color: `${activeTheme.text}` }}>
-                        {col}
-                      </span>
+                      <span style={{ color: `${activeTheme.text}` }}>{col}</span>
                       {players
                         .filter((p) => p.position === col)
                         .map((p) => (
@@ -140,13 +138,24 @@ function App() {
                   </button>
                 </li>
                 <li>
-                  <button
-                    onClick={maen}
-                    disabled={!isCurrentPlayerTurn}
-                    className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  >
-                    Maen
-                  </button>
+                  {!isCurrentPlayerTurn ? (
+                    <button
+                      onClick={maen}
+                      style={{ cursor: "not-allowed" }}
+                      disabled
+                      className="mt-4 w-full text-white bg-red-500 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:focus:ring-blue-800"
+                    >
+                      STOP
+                    </button>
+                  ) : (
+                    <button
+                      onClick={maen}
+                      // className="w-full"
+                      className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    >
+                      MAEN
+                    </button>
+                  )}
                 </li>
                 <li>
                   <button
@@ -161,7 +170,7 @@ function App() {
                     onClick={disconnectAll}
                     className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
-                    Disconnect All Users
+                    Leave Game
                   </button>
                 </li>
                 <li>
@@ -192,18 +201,8 @@ function App() {
               {!showChat ? (
                 <div className="joinChatContainer">
                   <h3>Join A Chat</h3>
-                  <input
-                    type="text"
-                    placeholder="John..."
-                    value={username}
-                    onChange={(event) => setUsername(event.target.value)}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Room ID..."
-                    value={room}
-                    onChange={(event) => setRoom(event.target.value)}
-                  />
+                  <input type="text" placeholder="John..." value={player && player.name} onChange={(event) => setUsername(event.target.value)} />
+                  <input type="text" placeholder="Room ID..." value={room} onChange={(event) => setRoom(event.target.value)} />
                   <button onClick={joinRoom}>Join A Room</button>
                 </div>
               ) : (
@@ -223,7 +222,6 @@ function App() {
           >
             section kanan
           </div> */}
-          
         </div>
       </div>
     </>
