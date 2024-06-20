@@ -6,6 +6,7 @@ export const useSocket = () => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
+    console.log("000");
     const newSocket = io("http://localhost:3000", {
       auth: {
         token: localStorage.getItem("token"),

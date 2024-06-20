@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { useSocket } from "./utils/socket";
 
+const socket = io("http://localhost:3000", {
+  auth: {
+    token: localStorage.getItem("token"),
+  },
+});
+
 function App() {
   const [board, setBoard] = useState([]);
   const [players, setPlayers] = useState([]);
@@ -8,39 +14,45 @@ function App() {
   const [turn, setTurn] = useState(0);
   const [error, setError] = useState("");
   const [player, setPlayer] = useState(null);
+  const [winner, setWinner] = useState(false);
 
-  const socket = useSocket();
+  // const socket = useSocket();
 
   useEffect(() => {
     if (!socket) return;
-    console.log(socket);
+    console.log(socket, "---");
+
+    socket.emit("game:join");
 
     socket.on("generated-board", (board) => setBoard(board));
     socket.on("players-position", setPlayers);
-    socket.on("dice/number", (dice) => {
-      setDadu(dice);
-      setTimeout(() => {
-        socket.emit("maen", dice);
-      }, 3000);
-    });
+    // socket.on("dice/number", (dice) => {
+    //   setDadu(dice);
+    //   setTimeout(() => {
+    //     socket.emit("maen", dice);
+    //   }, 3000);
+    // });
     socket.on("resetGame/position", setPlayers);
     socket.on("current-turn", setTurn);
     socket.on("error", (errorMessage) => setError(errorMessage));
     socket.on("player-info", (playerInfo) => setPlayer(playerInfo));
-  }, [socket]);
+  }, []);
 
   const maen = () => {
-    setError("");
-    socket.emit("dice");
+    socket.emit("dice", (dadu) => {
+      setDadu(dadu);
+      setTimeout(() => {
+        socket.emit("maen", dadu);
+      }, 3000);
+    });
+    const winner = socket.on("winner", (winner) => setWinner(winner));
   };
 
   const generateBoard = () => {
-    setError("");
     socket.emit("generateBoard");
   };
 
   const resetGame = () => {
-    setError("");
     socket.emit("resetGame");
   };
 
@@ -53,6 +65,7 @@ function App() {
 
   return (
     <>
+      {console.log(winner)}
       <button onClick={generateBoard}>Generate Board</button>
       <button onClick={maen} disabled={!isCurrentPlayerTurn}>
         Maen
