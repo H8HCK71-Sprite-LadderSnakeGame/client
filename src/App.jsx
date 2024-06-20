@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+import Chat from "./Chat";
 import { useSocket } from "./utils/socket";
+import "./App.css";
 
 const socket = io("http://localhost:3000", {
   auth: {
@@ -15,6 +17,18 @@ function App() {
   const [error, setError] = useState("");
   const [player, setPlayer] = useState(null);
   const [winner, setWinner] = useState(false);
+
+  //Ka lili
+  const [username, setUsername] = useState("x");
+  const [room, setRoom] = useState("1");
+  const [showChat, setShowChat] = useState(false);
+
+  const joinRoom = () => {
+    if (username !== "" && room !== "") {
+      socket.emit("join_room", room);
+      setShowChat(true);
+    }
+  };
 
   // const socket = useSocket();
 
@@ -65,37 +79,55 @@ function App() {
 
   return (
     <>
-      {console.log(winner)}
-      <button onClick={generateBoard}>Generate Board</button>
-      <button onClick={maen} disabled={!isCurrentPlayerTurn}>
-        Maen
-      </button>
-      <button onClick={resetGame}>Reset Game</button>
-      <button onClick={disconnectAll}>Disconnect All Users</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {board.length > 0 &&
-        board.map((row, rowIndex) => (
-          <div key={rowIndex} style={{ display: "flex" }}>
-            {row.map((col) => (
-              <div key={col} style={{ backgroundColor: "green", border: "1px solid black", width: 50, height: 50, padding: 5 }}>
-                <span>{col}</span>
-                {players
-                  .filter((p) => p.position === col)
-                  .map((p) => (
-                    <span key={p.id} style={{ color: p.color }}>
-                      O
-                    </span>
-                  ))}
+      <div>
+        <div>
+          {console.log(winner)}
+          <button onClick={generateBoard}>Generate Board</button>
+          <button onClick={maen} disabled={!isCurrentPlayerTurn}>
+            Maen
+          </button>
+          <button onClick={resetGame}>Reset Game</button>
+          <button onClick={disconnectAll}>Disconnect All Users</button>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {board.length > 0 &&
+            board.map((row, rowIndex) => (
+              <div key={rowIndex} style={{ display: "flex" }}>
+                {row.map((col) => (
+                  <div key={col} style={{ backgroundColor: "green", border: "1px solid black", width: 50, height: 50, padding: 5 }}>
+                    <span>{col}</span>
+                    {players
+                      .filter((p) => p.position === col)
+                      .map((p) => (
+                        <span key={p.id} style={{ color: p.color }}>
+                          O
+                        </span>
+                      ))}
+                  </div>
+                ))}
               </div>
             ))}
+          <p>Current Player: {currentPlayer}</p>
+          {player && (
+            <p>
+              Your Info: Name - {player.name}, Position - {player.position}
+            </p>
+          )}
+        </div>
+        <div>
+          <div className="App">
+            {!showChat ? (
+              <div className="joinChatContainer">
+                <h3>Join A Chat</h3>
+                <input type="text" placeholder="John..." value={username} onChange={(event) => setUsername(event.target.value)} />
+                <input type="text" placeholder="Room ID..." value={room} onChange={(event) => setRoom(event.target.value)} />
+                <button onClick={joinRoom}>Join A Room</button>
+              </div>
+            ) : (
+              <Chat socket={socket} username={username} room={room} />
+            )}
           </div>
-        ))}
-      <p>Current Player: {currentPlayer}</p>
-      {player && (
-        <p>
-          Your Info: Name - {player.name}, Position - {player.position}
-        </p>
-      )}
+        </div>
+      </div>
     </>
   );
 }
