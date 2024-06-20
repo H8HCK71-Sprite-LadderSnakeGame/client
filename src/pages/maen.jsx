@@ -84,78 +84,146 @@ function App() {
   return (
     <>
       <div>
-        <div>
-          {console.log(winner)}
-          <button onClick={generateBoard}>Generate Board</button>
-          <button onClick={maen} disabled={!isCurrentPlayerTurn}>
-            Maen
-          </button>
-          <button onClick={resetGame}>Reset Game</button>
-          <button onClick={disconnectAll}>Disconnect All Users</button>
-          <button
-            onClick={() => {
-              setTheme(theme === "green" ? "black" : "green");
+        <div className="App bg-blue-900 h-screen flex justify-center items-center vh-100">
+          {/* <div
+            style={{
+              backgroundColor: "#E1EFFE",
+              height: "100vh",
+              width: "30vw",
+              marginRight: "100px",
+              color: "black",
             }}
           >
-            Ganti Warna
-          </button>
+            section kiri, di section ini atau section kanan bakal di taro chat,
+            atau hiasan lain
+          </div> */}
+          {console.log(winner)}
           {error && <p style={{ color: "red" }}>{error}</p>}
-          {board.length > 0 &&
-            board.map((row, rowIndex) => (
-              <div key={rowIndex} style={{ display: "flex" }}>
-                {row.map((col) => (
-                  <div
-                    key={col}
-                    style={{
-                      backgroundColor: `${activeTheme.bg}`,
-                      border: `1px solid ${activeTheme.text}`,
-                      width: 50,
-                      height: 50,
-                      padding: 5,
-                    }}
+          <div className="flex flex-col items-center">
+            {board.length > 0 &&
+              board.map((row, rowIndex) => (
+                <div key={rowIndex} className="grid grid-cols-10">
+                  {row.map((col) => (
+                    // <div
+                    //   key={col}
+                    //   style={{
+                    //     backgroundColor: `${activeTheme.bg}`,
+                    //     border: `1px solid ${activeTheme.text}`,
+                    //     width: 50,
+                    //     height: 50,
+                    //     padding: 5,
+                    //   }}
+                    // >
+                    <div className="cell bg-blue-700 border flex items-center justify-center h-12 w-12 relative">
+                      <span style={{ color: `${activeTheme.text}` }}>
+                        {col}
+                      </span>
+                      {players
+                        .filter((p) => p.position === col)
+                        .map((p) => (
+                          <span key={p.id} style={{ color: p.color }}>
+                            O
+                          </span>
+                        ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
+            <div className="flex w-full">
+              <ul className="w-full">
+                <li>
+                  <button
+                    onClick={generateBoard}
+                    className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
-                    <span style={{color: `${activeTheme.text}`}}>{col}</span>
-                    {players
-                      .filter((p) => p.position === col)
-                      .map((p) => (
-                        <span key={p.id} style={{ color: p.color }}>
-                          O
-                        </span>
-                      ))}
-                  </div>
-                ))}
-              </div>
-            ))}
-          <p>Current Player: {currentPlayer}</p>
-          {player && (
-            <p>
-              Your Info: Name - {player.name}, Position - {player.position}
-            </p>
-          )}
-        </div>
-        <div>
-          <div className="App">
-            {!showChat ? (
-              <div className="joinChatContainer">
-                <h3>Join A Chat</h3>
-                <input
-                  type="text"
-                  placeholder="John..."
-                  value={username}
-                  onChange={(event) => setUsername(event.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="Room ID..."
-                  value={room}
-                  onChange={(event) => setRoom(event.target.value)}
-                />
-                <button onClick={joinRoom}>Join A Room</button>
-              </div>
-            ) : (
-              <Chat socket={socket} username={username} room={room} />
+                    Generate Board
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={maen}
+                    disabled={!isCurrentPlayerTurn}
+                    className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Maen
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={resetGame}
+                    className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Reset Game
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={disconnectAll}
+                    className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Disconnect All Users
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setTheme(theme === "green" ? "black" : "green");
+                    }}
+                    className="mt-4 w-full text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  >
+                    Ganti Warna
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div>
+            <p>Current Player: {currentPlayer}</p>
+            {player && (
+              <p>
+                Your Info: Name - {player.name}, Position - {player.position}
+              </p>
             )}
           </div>
+
+          <div>
+            <div className="App">
+              {!showChat ? (
+                <div className="joinChatContainer">
+                  <h3>Join A Chat</h3>
+                  <input
+                    type="text"
+                    placeholder="John..."
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Room ID..."
+                    value={room}
+                    onChange={(event) => setRoom(event.target.value)}
+                  />
+                  <button onClick={joinRoom}>Join A Room</button>
+                </div>
+              ) : (
+                <Chat socket={socket} username={username} room={room} />
+              )}
+            </div>
+          </div>
+
+          {/* <div
+            style={{
+              backgroundColor: "#E1EFFE",
+              height: "100vh",
+              width: "30vw",
+              marginLeft: "100px",
+              color: "black",
+            }}
+          >
+            section kanan
+          </div> */}
+          
         </div>
       </div>
     </>
